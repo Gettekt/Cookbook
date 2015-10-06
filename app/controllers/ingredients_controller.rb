@@ -24,7 +24,7 @@ class IngredientsController < ApplicationController
   # POST /ingredients
   # POST /ingredients.json
   def create
-    binding.pry
+    
     @ingredient = Ingredient.new(ingredient_params)
 
     respond_to do |format|

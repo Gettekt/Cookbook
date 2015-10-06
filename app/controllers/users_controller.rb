@@ -1,30 +1,30 @@
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :update, :destroy]
-  before_action :verify, only: [:edit]
+  before_action :set_user, only: [:show, :update, :destroy, :edit]
+  #before_action :verify, only: [:edit]
 
-  def verify
-    if session["user_id"] == nil or params["id"].to_i != session["user_id"]
-      redirect_to "/"
-    else
-      @user = User.find(session["user_id"])
-    end
-  end
-  def log_in
-    user = User.find_by_username(params["username"])
-    if user and user.authenticate(params["password"])
-      session["user_id"] =  user.id 
-    elsif user
-      flash.alert = "Invalid Password"
-    else
-      flash.alert = "Invalid Username"
-    end 
-    redirect_to '/'
+  # def verify
+  #  if session["user_id"] == nil or params["id"].to_i != session["user_id"]
+  #    redirect_to "/"
+  #   else
+  #    @user = User.find(session["user_id"])
+  #   end
+  # end
+  # def log_in
+  #  user = User.find_by_username(params["username"])
+  #   if user and user.authenticate(params["password"])
+  #    session["user_id"] =  user.id 
+  #   elsif user
+  #    flash.alert = "Invalid Password"
+  #   else
+  #     flash.alert = "Invalid Username"
+  #   end 
+  #   redirect_to '/'
 
-  end
-  def log_out
-    session["user_id"] = nil
-    redirect_to "/"
-  end
+  # end
+  # def log_out
+  #   session["user_id"] = nil
+  #   redirect_to "/"
+  # end
 
   # GET /users
   # GET /users.json
@@ -44,19 +44,35 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    @user
   end
 
   # POST /users
   # POST /users.json
   def create
+    binding.pry
     @user = User.new(user_params)
     respond_to do |format|
       if @user.save
-          allergen = params["user"]["allergens"]
-          if Ingredient.find_by_name(allergen["name"]) == nil
-            @ingredient = Ingredient.create({:name => allergen["name"] })
+        allergen = params["user"]["allergen"]
+        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil 
+          @ingredient = Ingredient.create({:name => allergen["name"] })
+          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+        elsif allergen["name"] != ""
+          @ingredient =  Ingredient.find_by_name(allergen["name"])
+          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+        end
+        if params["allergens"] != nil
+          params["allergens"].each do |a|
+            if Ingredient.find_by_name(a) == nil 
+              @ingredient = Ingredient.create({:name => a})
+              Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+            else
+              @ingredient = Ingredient.find_by_name(a)
+              Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+            end
           end
-          Useringredient.create({:user_id => @user.id, :ingredient_id => @ingredient.id})
+        end
         session["user_id"] = @user.id
         format.html { redirect_to '/', notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
@@ -72,6 +88,35 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
+        allergen = params["user"]["allergen"]
+        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil 
+          @ingredient = Ingredient.create({:name => allergen["name"] })
+          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+        elsif allergen["name"] != ""
+          @ingredient =  Ingredient.find_by_name(allergen["name"])
+          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+        end
+        if params["allergens"] != nil 
+          params["allergens"].each do |a|
+            if Ingredient.find_by_name(a) == nil 
+              @ingredient = Ingredient.create({:name => a})
+              Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+            else
+              @ingredient = Ingredient.find_by_name(a)
+              Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
+            end
+          end
+        end
+        if params["allergens_to_remove"] != nil
+          params["allergens_to_remove"].each do |allergen|
+            id =  Ingredient.find_by_name(allergen).id
+            @user.useringredients.each do |useringredient|
+              if useringredient.allergen_id == id
+                useringredient.destroy
+              end
+            end
+          end
+        end
         format.html { redirect_to '/', notice: 'User was successfully updated.' }
         format.json { render :show, status: :ok, location: @user }
       else
@@ -80,6 +125,12 @@ class UsersController < ApplicationController
       end
     end
   end
+
+
+
+
+
+
 
   # DELETE /users/1
   # DELETE /users/1.json

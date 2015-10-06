@@ -1,0 +1,13 @@
+<nav>
+   <% if current_user %>
+     <%= current_user.email %>
+     Welcome <%=@user.username%>
+	 <a href = "/users/<%=@user.id%>/edit">Change Settings</a>
+     <%= link_to "Log out", logout_path, { method: "delete" } %></a>
+   <% else %>
+    <%= link_to "Login", login_path %></a>
+    <%= link_to "Signup", signup_path %></a>
+   <% end %>
+</nav>
+
+
