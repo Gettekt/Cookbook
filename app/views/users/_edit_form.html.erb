@@ -1,4 +1,5 @@
-<%= form_for(@user) do |f| %>
+<%= form_for @user, html: {:class => "form-style"} do |f| %>
+<h1>Control Panel</h1>
   <% if @user.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
@@ -21,7 +22,7 @@
     <%= f.password_field :password_confirmation %><br>
   </div>
     <%if @user.allergens != []%>
-    Remove Allergens<br> 
+    Remove Allergens<br>
       <%@user.allergens.each do |allergen|%>
         <%=check_box_tag("allergens_to_remove[]", "#{allergen.name}", false)%>
         <%=label_tag("allergens_to_remove][]","#{allergen.name.capitalize}")%>
@@ -31,10 +32,10 @@
     Add Allergens<br>
     <%base_allergens = ['Peanut','Tree-Nut','Fish','Shellfish','Dairy','Egg','Wheat','Gluten','Soy']%>
     <%base_allergens.each do |allergen|%>
-      <%unless @user.allergens.include? Ingredient.find_by_name(allergen)%> 
+      <%unless @user.allergens.include? Ingredient.find_by_name(allergen)%>
         <%=check_box_tag("allergens[]","#{allergen}")%>
         <%=label_tag("allergens[]","#{allergen}")%>
-      <%end%> 
+      <%end%>
     <%end%>
     <%= f.fields_for :allergen do |allergen_form| %>
       <%= allergen_form.label :name %><br>

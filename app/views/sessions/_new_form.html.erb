@@ -1,0 +1,11 @@
+<%=flash["alert"] if flash["alert"] != nil%>
+   <% if !current_user %>
+         <%= form_for :session, url: login_path, html: {:class => "form-style"} do |f| %>
+          <h1>Log in</h1>
+           <%= f.email_field :email, :placeholder => "Email" %>
+             <%= f.password_field :password, :placeholder => "Password" %><br><br>
+             <%= f.submit "Log in", class: "btn-submit" %>
+         <% end %>
+   <% else %>
+     <% controller.redirect_to(root_url) %>
+   <% end %>
