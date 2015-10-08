@@ -1,4 +1,33 @@
-<form action= '/search' method='get'>
-<input type="text" name="query">
-<button type="submit">Search</button>
-</form>
+<div class="flexsearch">
+		<div class="flexsearch--wrapper">
+			<form class="flexsearch--form" action="/search" method="get">
+				<div class="flexsearch--input-wrapper">
+				 <input class='flexsearch--input' type="text" name="query">
+				</div>
+			   <input class='flexsearch--submit' type="submit" value="&#10140;">
+			</form>
+		</div>
+</div>
+
+
+<% if @recipes != nil %>
+	<div class='receipe-container'>
+
+		<div class='main-recipe'>
+			<div>
+			  <%= image_tag @recipes[0]["recipe"]["image"] %>
+		  </div>
+		</div>
+
+		<div class='recommended-recipe'>
+	    <% @recipes.each_with_index do |hit, index| %>
+	      <% the = hit["recipe"] %>
+				<% if index > 0 %>
+				  <p>
+			       <%= image_tag the["image"] %>
+				  </p>
+				<% end %>
+			<% end %>
+	  </div>
+  </div>
+<% end %>

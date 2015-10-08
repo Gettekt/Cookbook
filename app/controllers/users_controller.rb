@@ -12,12 +12,12 @@ class UsersController < ApplicationController
   # def log_in
   #  user = User.find_by_username(params["username"])
   #   if user and user.authenticate(params["password"])
-  #    session["user_id"] =  user.id 
+  #    session["user_id"] =  user.id
   #   elsif user
   #    flash.alert = "Invalid Password"
   #   else
   #     flash.alert = "Invalid Username"
-  #   end 
+  #   end
   #   redirect_to '/'
 
   # end
@@ -50,12 +50,11 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
-    binding.pry
     @user = User.new(user_params)
     respond_to do |format|
       if @user.save
         allergen = params["user"]["allergen"]
-        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil 
+        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil
           @ingredient = Ingredient.create({:name => allergen["name"] })
           Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
         elsif allergen["name"] != ""
@@ -64,7 +63,7 @@ class UsersController < ApplicationController
         end
         if params["allergens"] != nil
           params["allergens"].each do |a|
-            if Ingredient.find_by_name(a) == nil 
+            if Ingredient.find_by_name(a) == nil
               @ingredient = Ingredient.create({:name => a})
               Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
             else
@@ -89,16 +88,16 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         allergen = params["user"]["allergen"]
-        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil 
+        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil
           @ingredient = Ingredient.create({:name => allergen["name"] })
           Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
         elsif allergen["name"] != ""
           @ingredient =  Ingredient.find_by_name(allergen["name"])
           Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
         end
-        if params["allergens"] != nil 
+        if params["allergens"] != nil
           params["allergens"].each do |a|
-            if Ingredient.find_by_name(a) == nil 
+            if Ingredient.find_by_name(a) == nil
               @ingredient = Ingredient.create({:name => a})
               Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
             else
