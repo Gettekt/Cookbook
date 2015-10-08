@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20151005181247) do
   create_table "recipeingredients", force: :cascade do |t|
     t.integer  "recipe_id"
     t.integer  "ingredient_id"
+    t.string   "amount"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
@@ -45,10 +46,15 @@ ActiveRecord::Schema.define(version: 20151005181247) do
 
   create_table "userrecipes", force: :cascade do |t|
     t.integer  "user_id"
-    t.integer  "recipe_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "contribution_id"
+    t.integer  "favorite_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
+
+  add_index "userrecipes", ["contribution_id"], name: "index_userrecipes_on_contribution_id", using: :btree
+  add_index "userrecipes", ["favorite_id"], name: "index_userrecipes_on_favorite_id", using: :btree
+  add_index "userrecipes", ["user_id"], name: "index_userrecipes_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "username"

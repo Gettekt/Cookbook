@@ -27,7 +27,31 @@ class RecipesController < ApplicationController
     @recipe = Recipe.new(recipe_params)
 
     respond_to do |format|
-      if @recipe.save
+      if @recipe.save 
+        count = 1
+        complete_directions = ""
+        params["directions"].each do |direction|
+          complete_directions += direction + "\n"
+          count += 1
+        end 
+        @recipe.directions = complete_directions
+        params["ingredients"].each_with_index do |ingredient, index|
+          found = false
+          Ingredient.all.each do |db_ingredient|
+            if db_ingredient.name == ingredient
+              @ingredient = db_ingredient
+              Recipeingredient.create({:ingredient_id => @ingredient.id, :recipe_id => @recipe.id, :amount => params["amounts"][index]})
+              found = true
+            end
+          end
+          if found == false
+            @ingredient = Ingredient.create({:name => ingredient})
+            Recipeingredient.create({:ingredient_id => @ingredient.id, :recipe_id => @recipe.id, :amount => params["amounts"][index]})
+          end
+        end
+        Userrecipe.create({:contribution_id => @recipe.id, :user_id => current_user.id})
+        @recipe.save
+        binding.pry
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
         format.json { render :show, status: :created, location: @recipe }
       else
@@ -42,6 +66,58 @@ class RecipesController < ApplicationController
   def update
     respond_to do |format|
       if @recipe.update(recipe_params)
+        count = 1
+        complete_directions = ""
+        params["directions"].each do |direction|
+          complete_directions += direction + "\n"
+          count += 1
+        end
+        @ingredientnames = []
+        @recipe.ingredients.each do |ingredient|
+            @ingredientnames << ingredient.name 
+        end
+        params["ingredients"].each_with_index do |ingredient, index|
+          if !@ingredientnames.include? ingredient and ingredient != ""
+            found = false
+            Ingredient.all.each do |db_ingredient|
+              if db_ingredient.name == ingredient
+                @ingredient = db_ingredient
+                Recipeingredient.create({:ingredient_id => @ingredient.id, :recipe_id => @recipe.id, :amount => params["amounts"][index]})
+                found = true
+              end
+            end
+            if found == false
+              @ingredient = Ingredient.create({:name => ingredient})
+              Recipeingredient.create({:ingredient_id => @ingredient.id, :recipe_id => @recipe.id, :amount => params["amounts"][index]})
+            end
+          else 
+            if ingredient != ""
+              @ingredient = Ingredient.find_by_name(ingredient)
+              @recipe.recipeingredients.each do |recipeingredient|
+                if recipeingredient.ingredient_id == @ingredient.id
+                  recipeingredient.update({:amount =>params["amounts"][index]})
+                  recipeingredient.save
+                end
+              end
+            end
+          end 
+        end
+        @ingredientnames.each do |ingredient|
+          if !params["ingredients"].include?(ingredient)
+            @ingredient = Ingredient.find_by_name(ingredient)
+            @recipe.recipeingredients.each do |recipeingredient|
+              if recipeingredient.ingredient_id == @ingredient.id 
+                recipeingredient.destroy
+                if @ingredient.recipeingredients == nil
+                  @ingredient.destroy
+                end
+              end
+            end
+          end
+        end
+        @recipe.name =params["name"]
+        @recipe.directions = params["directions"].join("\n")
+        @recipe.save
         format.html { redirect_to @recipe, notice: 'Recipe was successfully updated.' }
         format.json { render :show, status: :ok, location: @recipe }
       else
@@ -69,6 +145,6 @@ class RecipesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def recipe_params
-      params.require(:recipe).permit(:name, :directions)
+      params.permit(:name, :directions)
     end
 end

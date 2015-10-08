@@ -1,25 +1,138 @@
-<%= form_for(@recipe) do |f| %>
-  <% if @recipe.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@recipe.errors.count, "error") %> prohibited this recipe from being saved:</h2>
 
-      <ul>
-      <% @recipe.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
+<%icount = 0%>
+<%dcount = 0%>
+<form action= '/recipes/<%=@recipe.id%>' method='post'>
+<input name="_method" type="hidden" value="PUT">
+<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+Recipe Name<br>
+<input type='text' name='name' value="<%=@recipe.name%>" required>
+<div id="ingredients">
+Ingredients<br>
+<%@recipe.ingredients.each_with_index do |ingredient,index|%>
+  <%icount +=1%>
+    <%if index == 0%>
+      <%=icount%>.<input type='text' name='ingredients[]' value="<%=ingredient.name%>" required>
+    <%else%>
+      <%=icount%>.<input type='text' name='ingredients[]' value="<%=ingredient.name%>" required>
+    <%end%>
+  <%@recipe.recipeingredients.each_with_index do |recipeingredient|%>
+    <%if Ingredient.find(recipeingredient[:ingredient_id]) ==  ingredient%>
+      <%if index == 0%>
+        <input type='text' name='amounts[]' value='<%=recipeingredient.amount%>' required><br>
+      <%else%>
+        <input type='text' name='amounts[]' value='<%=recipeingredient.amount%>' required><br>
+      <%end%>
+    <%end%>
+  <%end%>
+<%end%>
+</div>
+<button type="button" onclick="addIngredient()">Add Ingredient</button>
+<button type="button" onclick="removeIngredient()">Remove Ingredient</button>
+<div id= "directions">
+Directions<br>
+<%@recipe.directions.split("\n").each do |direction|%>
+  <%dcount +=1 %>
+  <%=dcount%>.<br><textarea rows="4" cols="50" name="directions[]" required><%=direction%></textarea><br>
+  <%end%>
+</div>
+<button type="button" onclick="addStep()">Add Step</button>
+<button type="button" onclick="removeStep()">Remove Step</button>
+<button type="submit">Submit</button>
+</form>
 
-  <div class="field">
-    <%= f.label :name %><br>
-    <%= f.text_field :name %>
-  </div>
-  <div class="field">
-    <%= f.label :directions %><br>
-    <%= f.text_field :directions %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
-<% end %>
+
+
+<script type="text/javascript">
+var ingredient_count = <%=icount%>;
+function addICount() {
+  return ingredient_count+=1;
+}
+var direction_count = <%=dcount%>;
+function addDCount() {
+  return direction_count+=1;
+}
+
+
+var div = document.getElementById("ingredients")
+var div2 = document.getElementById("directions")
+
+
+function createInputI() {
+  var field = document.createElement("input");
+  field.setAttribute('type','text');
+  field.setAttribute('name','ingredients[]');
+  field.setAttribute('placeholder','Ingredient');
+  field.required = true;
+    return field;
+}
+function createInputA() {
+  var field = document.createElement("input");
+  field.setAttribute('type','text');
+  field.setAttribute('name','amounts[]');
+  field.setAttribute('placeholder','Amount');
+  field.required = true;  
+    return field;
+}
+function createBr() {
+  var field = document.createElement("br");
+    return field;
+}
+
+function addIngredient() {
+div.appendChild(document.createTextNode(addICount() + "."))
+div.appendChild(createInputI());
+div.appendChild(document.createTextNode(" "));
+div.appendChild(createInputA());
+div.appendChild(createBr());
+
+}
+
+
+function createTA() {
+  var ta = document.createElement("textarea")
+  ta.setAttribute('rows', '4')
+  ta.setAttribute('cols', '50')
+  ta.setAttribute('name', 'directions[]')
+  ta.required = true;
+  return ta
+}
+
+function addStep() {
+div2.appendChild(document.createTextNode(addDCount() + "."))
+div2.appendChild(createBr());
+div2.appendChild(createTA());
+div2.appendChild(createBr());
+}
+
+var firstS = 1
+var firstI = 1
+
+function removeStep() {
+  if (direction_count > 1){
+  if (firstS == 1){
+    div2.removeChild(div2.lastChild)
+    firstS = 0
+  }
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  direction_count --
+}
+}  
+
+function removeIngredient() {
+  if (ingredient_count > 1){
+  if (firstI == 1){
+    div.removeChild(div.lastChild)
+    firstI = 0
+  }
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  ingredient_count --
+}
+}
+</script>
