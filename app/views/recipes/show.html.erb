@@ -1,14 +1,40 @@
 <p id="notice"><%= notice %></p>
 
+<%count = 1%>
+<%dcount = 1%>
 <p>
-  <strong>Name:</strong>
+	<strong>Author</strong><br>
+	
+	<% @recipe.userrecipes.each do |userrecipe| %>
+		<%if userrecipe[:contribution_id]%>
+      <%@user =User.find_by_id(userrecipe[:user_id])%>
+			<%=@user.username%>
+		<%end%>
+	<%end%>
+<p>
+  <strong>Name</strong><br>
   <%= @recipe.name %>
 </p>
-
 <p>
-  <strong>Directions:</strong>
-  <%= @recipe.directions %>
+  <strong>Ingredients</strong><br>
+  <% @recipe.ingredients.each do |ingredient| %><br>
+    <%=count%>. <%=ingredient.name%>
+    <%count+= 1%>
+    <%@recipe.recipeingredients.each do |recipeingredient|%>
+      <%if recipeingredient.ingredient_id == ingredient.id%>
+        | <%=recipeingredient.amount%>
+      <%end%>
+    <%end%>
+  <%end%>
 </p>
-
+<p>
+  <strong>Directions:</strong><br>
+  <% @recipe.directions.split("\n").each do |direction| %>
+  	<%=dcount%>. <%=direction%><br>
+    <%dcount += 1%>
+  <%end%>
+</p>
+<%if current_user == @user%>
 <%= link_to 'Edit', edit_recipe_path(@recipe) %> |
+<%end%>
 <%= link_to 'Back', recipes_path %>

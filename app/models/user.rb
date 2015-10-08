@@ -2,8 +2,9 @@ class User < ActiveRecord::Base
 	has_secure_password
 	has_many :useringredients
 	has_many :allergens, through: :useringredients, :class_name =>'Ingredient' 
-	has_many :userrecipies
-	has_many :favorites, through: :userrecipies, :class_name => 'Recipe'
+	has_many :userrecipes
+	has_many :favorites, through: :userrecipes, :class_name => 'Recipe'
+	has_many :contributions, through: :userrecipes, :class_name => 'Recipe'
 	validates_presence_of :username  
 	validates_uniqueness_of :username
 	validates_presence_of :email

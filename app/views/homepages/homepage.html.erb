@@ -1,4 +1,122 @@
+<%space =" "%>
 <form action= '/search' method='get'>
 <input type="text" name="query">
 <button type="submit">Search</button>
 </form>
+
+<p>Add your own recipe</p> 
+<form action= '/recipes' method='post'>
+<input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+Recipe Name<br>
+<input type='text' name='name' placeholder='Name' required>
+<div id="ingredients">
+Ingredients<br>
+1.<input type='text' name='ingredients[]' placeholder='Ingredient' required><%=space%><input type='text' name='amounts[]' placeholder='Amount' required><br>
+</div>
+<button type="button" onclick="addIngredient()">Add Ingredient</button>
+<button type="button" onclick="removeIngredient()">Remove Ingredient</button>
+<div id= "directions">
+Directions<br>
+1.<br><textarea rows="4" cols="50" name="directions[]" required></textarea><br>
+</div>
+<button type="button" onclick="addStep()">Add Step</button>
+<button type="button" onclick="removeStep()">Remove Step</button>
+<button type="submit">Submit</button>
+</form>
+
+
+ 
+<script type="text/javascript">
+var ingredient_count = 1;
+function addICount() {
+  return ingredient_count+=1;
+}
+var direction_count = 1;
+function addDCount() {
+  return direction_count+=1;
+}
+
+
+var div = document.getElementById("ingredients")
+var div2 = document.getElementById("directions")
+
+
+function createInputI() {
+  var field = document.createElement("input");
+  field.setAttribute('type','text');
+  field.setAttribute('name','ingredients[]');
+  field.setAttribute('placeholder','Ingredient');
+  field.required = true;
+    return field;
+}
+function createInputA() {
+  var field = document.createElement("input");
+  field.setAttribute('type','text');
+  field.setAttribute('name','amounts[]');
+  field.setAttribute('placeholder','Amount');
+  field.required = true;  
+    return field;
+}
+function createBr() {
+  var field = document.createElement("br");
+    return field;
+}
+
+function addIngredient() {
+div.appendChild(document.createTextNode(addICount() + "."))
+div.appendChild(createInputI());
+div.appendChild(document.createTextNode(" "));
+div.appendChild(createInputA());
+div.appendChild(createBr());
+
+}
+
+
+function createTA() {
+  var ta = document.createElement("textarea")
+  ta.setAttribute('rows', '4')
+  ta.setAttribute('cols', '50')
+  ta.setAttribute('name', 'directions[]')
+  ta.required = true;
+  return ta
+}
+
+function addStep() {
+div2.appendChild(document.createTextNode(addDCount() + "."))
+div2.appendChild(createBr());
+div2.appendChild(createTA());
+div2.appendChild(createBr());
+}
+
+var firstS = 1
+var firstI = 1
+
+function removeStep() {
+  if (direction_count > 1){
+  if (firstS == 1){
+    div2.removeChild(div2.lastChild)
+    firstS = 0
+  }
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  direction_count --
+} 
+}
+
+function removeIngredient() {
+  if (ingredient_count > 1){
+  if (firstI == 1){
+    div.removeChild(div.lastChild)
+    firstI = 0
+  }
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  div.removeChild(div.lastChild)
+  ingredient_count --
+}
+}
+</script>
