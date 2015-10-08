@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :update, :destroy, :edit]
+  
   #before_action :verify, only: [:edit]
 
   # def verify
