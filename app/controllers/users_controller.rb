@@ -51,17 +51,10 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.json
   def create
+    binding.pry
     @user = User.new(user_params)
     respond_to do |format|
       if @user.save
-        allergen = params["user"]["allergen"]
-        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil
-          @ingredient = Ingredient.create({:name => allergen["name"] })
-          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
-        elsif allergen["name"] != ""
-          @ingredient =  Ingredient.find_by_name(allergen["name"])
-          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
-        end
         if params["allergens"] != nil
           params["allergens"].each do |a|
             if Ingredient.find_by_name(a) == nil
@@ -88,14 +81,6 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
-        allergen = params["user"]["allergen"]
-        if allergen["name"] != "" and Ingredient.find_by_name(allergen["name"]) == nil
-          @ingredient = Ingredient.create({:name => allergen["name"] })
-          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
-        elsif allergen["name"] != ""
-          @ingredient =  Ingredient.find_by_name(allergen["name"])
-          Useringredient.create({:user_id => @user.id, :allergen_id => @ingredient.id})
-        end
         if params["allergens"] != nil
           params["allergens"].each do |a|
             if Ingredient.find_by_name(a) == nil

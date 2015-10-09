@@ -17,11 +17,51 @@ class HomepagesController < ApplicationController
 
      @current_user ||= User.find(session[:user_id]) if session[:user_id]
      @current_user.allergens.each do |allergen|
-       search_path += ("&health=" + allergen.name.downcase + "-free")
-     end
+        if ['peanut','tree-nut','fish','shellfish','dairy','egg','wheat','gluten','soy'].include? allergen.name.downcase
+          search_path += ("&health=" + allergen.name.downcase + "-free")
+        end
+      end
 
      result = JSON.load(open(search_path))
      @recipes = result["hits"]
      render :homepage
  end
+ def newlocalsearch
+    render :newlocalsearch
+ end
+ def conductlocalsearch
+    results = []
+    Recipe.all.each do |recipe|
+      results << recipe
+    end 
+    Recipe.all.each do |recipe|
+      if Levenshtein.distance("#{recipe.name}", "params['query']") > 2 and !recipe.name.include? params['query']
+        results.delete(recipe)
+      end
+      tag_names = []
+      recipe.tags.each do |tag|
+        tag_names << tag.name
+      end
+      if params["tags"] != nil
+        params["tags"].each do |tag|
+          if !tag_names.include? tag and results.include? recipe
+            results.delete(recipe)
+          end
+        end 
+      end
+      if params["rating"] != nil and recipe.rating.to_i < params["rating"].to_i and results.include? recipe
+        results.delete(recipe)
+      end
+      current_user.allergens.each do |allergen|
+        recipe.ingredients.each do |ingredient|
+          if (Levenshtein.distance("#{allergen.name}", "#{ingredient.name}") < 2 or ingredient.name.include? allergen.name or allergen.name.include? ingredient.name) and results.include? recipe
+            results.delete(recipe)
+          end
+        end
+      end
+    end
+    @recipes = results
+    render :'/recipes/index'
+  end
+
 end

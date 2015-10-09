@@ -37,11 +37,47 @@
         <%=label_tag("allergens[]","#{allergen}")%>
       <%end%>
     <%end%>
-    <%= f.fields_for :allergen do |allergen_form| %>
-      <%= allergen_form.label :name %><br>
-      <%= allergen_form.text_field :name %><br>
-    <%end%>
+    <div id="allergens">
+    1.<br><input type="text" name="allergens[]" required>
+    </div>
+    <button type="button" onclick="addAllergen()">Add Custom Allergen</button>
+    <button type="button" onclick="removeAllergen()">Remove Custom Allergen</button>
     <div class="actions">
       <%= f.submit %>
     </div>
 <% end %>
+
+
+<script>
+var allergens = document.getElementById("allergens")  
+var acount = 1 
+
+function addAcount(){
+  return acount += 1;
+}
+
+function createInputA(){
+  var a = document.createElement("input")
+  a.setAttribute('type','text')
+  a.setAttribute('name','allergens[]')
+  a.required = true
+  return a
+}
+
+function addAllergen(){
+  allergens.appendChild(document.createTextNode(addAcount() + "."))
+  allergens.appendChild(createInputA());
+  a.required = true
+}
+function removeAllergen(){
+  allergens.removeChild(allergens.lastChild)
+  allergens.removeChild(allergens.lastChild)
+  acount --
+  if (acount == 0){
+  allergens.removeChild(allergens.lastChild)
+  allergens.removeChild(allergens.lastChild) 
+  }
+}
+</script>
+
+

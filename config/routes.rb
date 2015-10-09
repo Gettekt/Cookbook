@@ -12,6 +12,8 @@ Rails.application.routes.draw do
   post '/login' => 'sessions#create'
   delete '/logout' => 'sessions#destroy'
   get '/search' => 'homepages#search'
+  get '/localsearch' => 'homepages#newlocalsearch'
+  get '/conductlocalsearch' => 'homepages#conductlocalsearch'
 
 
 

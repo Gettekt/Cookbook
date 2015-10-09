@@ -1,12 +1,11 @@
 <p id="notice"><%= notice %></p>
 
 <h1>Listing Recipes</h1>
-
 <table>
   <thead>
     <tr>
       <th>Name</th>
-      <th>Directions</th>
+      <th>Rating</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -15,10 +14,11 @@
     <% @recipes.each do |recipe| %>
       <tr>
         <td><%= recipe.name %></td>
-        <td><%= recipe.directions %></td>
-        <td><%= link_to 'Show', recipe %></td>
-        <td><%= link_to 'Edit', edit_recipe_path(recipe) %></td>
-        <td><%= link_to 'Destroy', recipe, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><% recipe.rating.to_i.times do%>
+            &#9733
+            <%end%>
+         </td>
+        <td> <a href="/recipes/<%=recipe.id%>">Go To</a></td>
       </tr>
     <% end %>
   </tbody>

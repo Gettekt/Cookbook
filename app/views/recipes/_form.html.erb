@@ -7,6 +7,16 @@
 Recipe Name<br>
 <input type='text' name='name' value="<%=@recipe.name%>" required>
 <div id="ingredients">
+Tags
+<%Tag.all.each do |tag|%>
+  <%if @recipe.tags.include? tag%>
+    <input type="checkbox" name="tags[]" value="<%=tag.name%>" checked="true"><%=tag.name%>
+  <%else%>
+    <input type="checkbox" name="tags[]" value="<%=tag.name%>"><%=tag.name%>
+  <%end%>
+<%end%>
+Serves
+<input type="number" name="serves" value="<%=@recipe.serves%>" required>
 Ingredients<br>
 <%@recipe.ingredients.each_with_index do |ingredient,index|%>
   <%icount +=1%>

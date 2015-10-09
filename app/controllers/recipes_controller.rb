@@ -50,6 +50,13 @@ class RecipesController < ApplicationController
           end
         end
         Userrecipe.create({:contribution_id => @recipe.id, :user_id => current_user.id})
+        if params["tags"] != nil
+          params["tags"].each do |tag|
+            @tag = Tag.find_by_name(tag)
+            Recipetag.create({:recipe_id => @recipe.id,:tag_id => @tag.id})
+          end 
+        end  
+        @recipe.serves = params["serves"]
         @recipe.save
         binding.pry
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
@@ -115,6 +122,26 @@ class RecipesController < ApplicationController
             end
           end
         end
+        tags = []
+        if params["tags"] != nil
+          params["tags"].each do |tag|
+            a = Tag.find_by_name(tag)
+            tags << a
+            if !@recipe.tags.include? a
+              Recipetag.create({:recipe_id => @recipe.id, :tag_id => a.id })
+            end
+          end
+        end
+        @recipe.tags.each do |tag|
+          if !tags.include? tag
+            @recipe.recipetags.each do |recipetag|
+              if recipetag.tag_id == tag.id 
+                recipetag.destroy
+              end
+            end
+          end
+        end
+        @recipe.serves = params["serves"]
         @recipe.name =params["name"]
         @recipe.directions = params["directions"].join("\n")
         @recipe.save
@@ -145,6 +172,6 @@ class RecipesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def recipe_params
-      params.permit(:name, :directions)
+      params.permit(:name, :rating)
     end
 end

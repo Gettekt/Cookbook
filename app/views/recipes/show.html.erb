@@ -2,9 +2,9 @@
 
 <%count = 1%>
 <%dcount = 1%>
+<%tcount =1%>
 <p>
 	<strong>Author</strong><br>
-	
 	<% @recipe.userrecipes.each do |userrecipe| %>
 		<%if userrecipe[:contribution_id]%>
       <%@user =User.find_by_id(userrecipe[:user_id])%>
@@ -16,13 +16,28 @@
   <%= @recipe.name %>
 </p>
 <p>
+  <strong>Tags</strong><br>
+  <% @recipe.tags .each do |tag|%>
+    <%=tcount%>.<%=tag.name%>
+    <%tcount+=1%>
+  <%end%>
+</p>
+<p>
+  <strong>Serves</strong><br>
+  <%=@recipe.serves%>
+</p>
+<p>
+  <strong>Rating</strong><br>
+  <%=@recipe.rating%>
+</p>
+<p>
   <strong>Ingredients</strong><br>
   <% @recipe.ingredients.each do |ingredient| %><br>
     <%=count%>. <%=ingredient.name%>
     <%count+= 1%>
     <%@recipe.recipeingredients.each do |recipeingredient|%>
       <%if recipeingredient.ingredient_id == ingredient.id%>
-        | <%=recipeingredient.amount%>
+        <%=recipeingredient.amount%>
       <%end%>
     <%end%>
   <%end%>
