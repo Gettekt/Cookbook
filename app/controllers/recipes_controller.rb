@@ -179,10 +179,31 @@ class RecipesController < ApplicationController
       @recipe.rating= ((@total.to_f)/@recipe.ratings.count) 
     end
     @recipe.save 
-    if @user.ratings == []
-      @first_time_set = params['rating']
-    end 
+    @first_time_set = params['rating']
     render :show 
+  end
+  def favorite
+    require_user
+    @user = current_user
+    @recipe = Recipe.find(params['recipe_id'])
+    if params['state'] == "unfavorite"
+      @user.userrecipes.each do |userrecipe|
+        if userrecipe.favorite_id == @recipe.id
+          userrecipe.delete
+        end 
+      end
+    else 
+      Userrecipe.create({:user_id => @user.id, :favorite_id => @recipe.id})
+    end
+    render :show
+  end
+  def user_recipes
+    require_user
+    @user = current_user
+    @form = "my_recipes"
+    @favorites = @user.favorites
+    @contributions = @user.contributions
+    render :index
   end
 
   # DELETE /recipes/1

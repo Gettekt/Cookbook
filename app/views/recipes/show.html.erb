@@ -3,12 +3,13 @@
 <%count = 1%>
 <%dcount = 1%>
 <%tcount =1%>
+<%@found = false%>
 <p>
 	<strong>Author</strong><br>
 	<% @recipe.userrecipes.each do |userrecipe| %>
 		<%if userrecipe[:contribution_id]%>
-      <%@user =User.find_by_id(userrecipe[:user_id])%>
-			<%=@user.username%>
+      <%@og_user =User.find_by_id(userrecipe[:user_id])%>
+			<%=@og_user.username%>
 		<%end%>
 	<%end%>
 </p>
@@ -34,14 +35,16 @@
   <%if current_user%>
   <%@user_rating = 0%>
   <%@user = current_user%>
-  <%if @user.ratings == [] and @first_time_set != nil%>
-    <%@user_rating = @first_time_set.to_f%>
-  <%end%>
-  <%@user.ratings.each do |rating|%>
+   <%@user.ratings.each do |rating|%>
     <%if rating.recipe_id == @recipe.id%>
       <%@user_rating = rating.value%>
+      <%@found = true%>
     <%end%>
   <%end%> 
+  <%if @found == false and @first_time_set != nil%>
+    <%@user_rating = @first_time_set.to_f%>
+  <%end%>
+ <%unless current_user == @og_user%>
   <form id="rating_form" action="/update_rating" method="post" onchange="if(this.value != '0') submit()" >
   <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
   <input name="recipe_id" value="<%=@recipe.id%>" type="hidden">
@@ -54,6 +57,7 @@
     <option id="5.0" value=5>5</option>
   </select>
   </form>
+  <%end%>
   <%end%>
 </p>
 
@@ -76,11 +80,25 @@
     <%dcount += 1%>
   <%end%>
 </p>
-<%if current_user == @user%>
-<%= link_to 'Edit', edit_recipe_path(@recipe) %> |
+<%unless current_user == @og_user%>
+  Favorite
+  <form action="/favorite" method="post">
+  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+  <input name="recipe_id" value="<%=@recipe.id%>" type="hidden">
+  <%if current_user.favorites.include? @recipe%>
+    <input type="hidden" name="state" value="unfavorite">
+    <button>&#9733 </button>
+  <%else%>
+    <input type="hidden" name="state" value="favorite">
+    <button>&#9734 </button>
+  <%end%>
+<%else%>
+  <%= link_to 'Edit', edit_recipe_path(@recipe) %> 
 <%end%>
-<%= link_to 'Back', recipes_path %>
 </body>
+
+
+
 <script>
 var rating_form = document.getElementById("rating_form")
 var default_select = document.getElementById("0")

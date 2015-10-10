@@ -14,8 +14,9 @@ Rails.application.routes.draw do
   get '/search' => 'homepages#search'
   get '/localsearch' => 'homepages#newlocalsearch'
   get '/conductlocalsearch' => 'homepages#conductlocalsearch'
-  post 'update_rating' => 'recipes#update_rating'
-
+  post '/update_rating' => 'recipes#update_rating'
+  post '/favorite' => 'recipes#favorite'
+  get '/my_recipes' => 'recipes#user_recipes'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

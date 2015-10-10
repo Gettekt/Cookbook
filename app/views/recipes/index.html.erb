@@ -1,4 +1,69 @@
 <h1>Listing Recipes</h1>
+<%if @form%>
+<strong>Contributions</strong>
+<%unless @contributions == []%>
+<table>
+  <thead>
+   <tr>
+      <th>Name</th>
+      <th>Rating</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @contributions.each do |recipe| %>
+      <tr>
+        <td><%= recipe.name %></td>
+        <td><% recipe.rating.round.to_i.times do%>
+            &#9733
+            <%end%>
+         </td>
+        <td> <a href="/recipes/<%=recipe.id%>">Go To</a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%else%>
+<br>
+Nothing to see here
+<br>
+<%end%>
+<%= link_to 'New Recipe', new_recipe_path %>
+<br>
+<strong>Favorites</strong>
+<%unless @favorites == []%>
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Rating</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @favorites.each do |recipe| %>
+      <tr>
+        <td><%= recipe.name %></td>
+        <td><% recipe.rating.round.to_i.times do%>
+            &#9733
+            <%end%>
+         </td>
+        <td> <a href="/recipes/<%=recipe.id%>">Go To</a></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%else%>
+<br>
+Nothing to see here
+<br>
+<%end%>
+<%= link_to 'Search for recipes', localsearch_path %>
+
+
+<%else%>
 <table>
   <thead>
     <tr>
@@ -23,5 +88,6 @@
 </table>
 
 <br>
-
+<%= link_to 'Search for recipes', localsearch_path %> |
 <%= link_to 'New Recipe', new_recipe_path %>
+<%end%>

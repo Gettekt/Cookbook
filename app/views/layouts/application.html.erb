@@ -18,6 +18,7 @@
          <li><%= link_to "Home", root_url %></a></li>
          <li><%= link_to "New Recipe", new_recipe_path %></a></li>
          <li><%= link_to "Search Local Recipe",localsearch_path %></a></li>
+         <li><%= link_to "My Recipes", my_recipes_path %></a></li>
         <% else %>
          <li><%= link_to "Login", login_path, class: 'menu_button'%></a></li>
          <li><%= link_to "Signup", signup_path, class: 'menu_button'%></a><li>

@@ -35,7 +35,7 @@ class HomepagesController < ApplicationController
       results << recipe
     end 
     Recipe.all.each do |recipe|
-      if Levenshtein.distance("#{recipe.name}", "params['query']") > 2 and !recipe.name.include? params['query']
+      if Levenshtein.distance(recipe.name, params['query']) > 2 and !recipe.name.include? params['query'] and !params['query'].include? recipe.name
         results.delete(recipe)
       end
       tag_names = []
