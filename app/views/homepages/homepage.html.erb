@@ -8,26 +8,39 @@
 			</form>
 		</div>
 </div>
-
-
 <% if @recipes != nil %>
-	<div class='receipe-container'>
+	<div class='container-recipe'>
 
-		<div class='main-recipe'>
+		<div class='recipe-main'>
 			<div>
 			  <%= image_tag @recipes[0]["recipe"]["image"] %>
 		  </div>
+			<div>
+				<h2><%= @recipes[0]["recipe"]["label"].split(" ").map { |x| x.capitalize }.join(" ") %></h2>
+			</div>
 		</div>
 
-		<div class='recommended-recipe'>
+		<div class='recipe-recommended'>
 	    <% @recipes.each_with_index do |hit, index| %>
 	      <% the = hit["recipe"] %>
-				<% if index > 0 %>
+				<% if index > 0 && index < 5 %>
 				  <p>
 			       <%= image_tag the["image"] %>
 				  </p>
 				<% end %>
 			<% end %>
-	  </div>
+		</div>
+
+			<div class='recipe-recommended'>
+		    <% @recipes.each_with_index do |hit, index| %>
+		      <% the = hit["recipe"] %>
+					<% if index > 4 && index < 9 %>
+					  <p>
+				       <%= image_tag the["image"] %>
+					  </p>
+					<% end %>
+				<% end %>
+		  </div>
+
   </div>
 <% end %>

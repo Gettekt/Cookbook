@@ -17,7 +17,9 @@ class HomepagesController < ApplicationController
 
      @current_user ||= User.find(session[:user_id]) if session[:user_id]
      @current_user.allergens.each do |allergen|
-       search_path += ("&health=" + allergen.name.downcase + "-free")
+       if ['peanut','tree-nut','fish','shellfish','dairy','egg','wheat','gluten','soy'].include? allergen.name.downcase
+         search_path += ("&health=" + allergen.name.downcase + "-free")
+       end
      end
 
      result = JSON.load(open(search_path))
