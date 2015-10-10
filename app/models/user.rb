@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
 	has_many :userrecipes
 	has_many :favorites, through: :userrecipes, :class_name => 'Recipe'
 	has_many :contributions, through: :userrecipes, :class_name => 'Recipe'
+	has_many :ratings
 	validates_presence_of :username  
 	validates_uniqueness_of :username
 	validates_presence_of :email

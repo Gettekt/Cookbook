@@ -38,7 +38,7 @@
       <%end%>
     <%end%>
     <div id="allergens">
-    1.<br><input type="text" name="allergens[]">
+    1.<br><input type="text" name="allergens[]" required>
     </div>
     <button type="button" onclick="addAllergen()">Add Custom Allergen</button>
     <button type="button" onclick="removeAllergen()">Remove Custom Allergen</button>
@@ -60,20 +60,22 @@ function createInputA(){
   var a = document.createElement("input")
   a.setAttribute('type','text')
   a.setAttribute('name','allergens[]')
+  a.required = true
   return a
 }
 
 function addAllergen(){
   allergens.appendChild(document.createTextNode(addAcount() + "."))
   allergens.appendChild(createInputA());
-  a.required = true
 }
 function removeAllergen(){
-  if (acount != 1){
   allergens.removeChild(allergens.lastChild)
   allergens.removeChild(allergens.lastChild)
   acount --
-}
+  if (acount == 0){
+  allergens.removeChild(allergens.lastChild)
+  allergens.removeChild(allergens.lastChild) 
+  }
 }
 </script>
 

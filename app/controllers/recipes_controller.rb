@@ -58,7 +58,6 @@ class RecipesController < ApplicationController
         end  
         @recipe.serves = params["serves"]
         @recipe.save
-        binding.pry
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
         format.json { render :show, status: :created, location: @recipe }
       else
@@ -152,6 +151,38 @@ class RecipesController < ApplicationController
         format.json { render json: @recipe.errors, status: :unprocessable_entity }
       end
     end
+  end
+  def update_rating
+    #binding.pry
+    require_user
+    found = false
+    @user = current_user
+    @recipe = Recipe.find(params["recipe_id"])
+    #binding.pry
+    @total =0
+    @recipe.ratings.each do |rating|
+      @total += rating.value
+    end 
+    @user.ratings.each do |rating|
+      if rating.recipe_id.to_i == params["recipe_id"].to_i
+        @rating = rating
+        found = true 
+      end 
+    end 
+    if found == false
+      @rating = Rating.create({:recipe_id => params["recipe_id"], :user_id => @user.id, :value => params["rating"].to_i})
+      @recipe.rating = ((@total + params["rating"].to_i)/(@recipe.ratings.count.to_f))
+    else
+      @total -= @rating.value
+      @rating.update({:value => params["rating"].to_i})
+      @total += @rating.value
+      @recipe.rating= ((@total.to_f)/@recipe.ratings.count) 
+    end
+    @recipe.save 
+    if @user.ratings == []
+      @first_time_set = params['rating']
+    end 
+    render :show 
   end
 
   # DELETE /recipes/1

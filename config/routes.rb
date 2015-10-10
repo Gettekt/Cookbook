@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get '/search' => 'homepages#search'
   get '/localsearch' => 'homepages#newlocalsearch'
   get '/conductlocalsearch' => 'homepages#conductlocalsearch'
+  post 'update_rating' => 'recipes#update_rating'
 
 
 
