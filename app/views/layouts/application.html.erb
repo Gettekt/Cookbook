@@ -12,13 +12,12 @@
     <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
       <ul class="nav sidebar-nav">
         <% if current_user %>
-          <li class='nolink'>Welcome <%=current_user.username%></li>
-        <li><a href = "/users/<%=current_user.id%>/edit" class='menu_button'>Change Settings</a></li>
-         <li><%= link_to "Log out", logout_path, { method: "delete" } %></a></li>
+         <li class='nolink'>Welcome <%=current_user.username%></li>
          <li><%= link_to "Home", root_url %></a></li>
-         <li><%= link_to "New Recipe", new_recipe_path %></a></li>
-         <li><%= link_to "Search Local Recipe",localsearch_path %></a></li>
+         <li><%= link_to "Make A Recipe", new_recipe_path %></a></li>
          <li><%= link_to "My Recipes", my_recipes_path %></a></li>
+         <li><a href = "/users/<%=current_user.id%>/edit" class='menu_button'>Account Settings</a></li>
+         <li><%= link_to "Log out", logout_path, { method: "delete" } %></a></li>
         <% else %>
          <li><%= link_to "Login", login_path, class: 'menu_button'%></a></li>
          <li><%= link_to "Signup", signup_path, class: 'menu_button'%></a><li>

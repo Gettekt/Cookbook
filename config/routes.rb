@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   get '/conductlocalsearch' => 'homepages#conductlocalsearch'
   post '/update_rating' => 'recipes#update_rating'
   post '/favorite' => 'recipes#favorite'
+  post '/directions/:id' => 'recipes#directions'
   get '/my_recipes' => 'recipes#user_recipes'
 
 

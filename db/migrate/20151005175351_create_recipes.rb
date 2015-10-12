@@ -4,8 +4,8 @@ class CreateRecipes < ActiveRecord::Migration
       t.string :name
       t.string :directions
       t.float :rating
-      t.integer :serves 
-
+      t.integer :serves
+      t.attachment :image
       t.timestamps null: false
     end
   end

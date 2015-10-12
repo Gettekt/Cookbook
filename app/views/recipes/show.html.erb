@@ -1,100 +1,150 @@
 <body onload="set_dropdown()">
-
 <%count = 1%>
 <%dcount = 1%>
 <%tcount =1%>
 <%@found = false%>
-<p>
-	<strong>Author</strong><br>
+
+<div class="recipe-background">
+<div class="recipe-container">
+
+<div class="recipe-box">
+	<h3><%= @recipe.name %></h3>
+
+<div class="rating-container">
+<div class="star-ratings-css">
+	  <div class="star-ratings-css-top" style="width: <%=@recipe.rating.ceil*25%>%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+	  <div class="star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+</div>
+</div><br>
+
+<div class="edit-rating-container">
+	<div class="edit-rating">
+		  <%if current_user%>
+		  <%@user_rating = 0%>
+		  <%@user = current_user%>
+		   <%@user.ratings.each do |rating|%>
+		    <%if rating.recipe_id == @recipe.id%>
+		      <%@user_rating = rating.value%>
+		      <%@found = true%>
+		    <%end%>
+		  <%end%>
+
+		  <%if @found == false and @first_time_set != nil%>
+		    <%@user_rating = @first_time_set.to_f%>
+		  <%end%>
+
+		 <%unless current_user == @og_user%>
+		  <form id="rating_form" action="/update_rating" method="post" onchange="if(this.value != '0') submit()" >
+		  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+		  <input name="recipe_id" value="<%=@recipe.id%>" type="hidden">
+		  <select name="rating">
+		    <option id="0" value=0 selected="selected">Rating</option>
+		    <option id="1.0" value=1>1</option>
+		    <option id="2.0" value=2>2</option>
+		    <option id="3.0" value=3>3</option>
+		    <option id="4.0" value=4>4</option>
+		    <option id="5.0" value=5>5</option>
+		  </select>
+		  </form>
+		  <%end%>
+		<%end%>
+	 </div>
+	</div>
+	<div class="recipe-founder">
 	<% @recipe.userrecipes.each do |userrecipe| %>
 		<%if userrecipe[:contribution_id]%>
-      <%@og_user =User.find_by_id(userrecipe[:user_id])%>
-			<%=@og_user.username%>
+	    <%@og_user =User.find_by_id(userrecipe[:user_id])%>
+			<div>
+				<h5>Recipe by: </h3><%=@og_user.username%>
+			</div>
+		 <%end%>
 		<%end%>
-	<%end%>
-</p>
-<p>
-  <strong>Name</strong><br>
-  <%= @recipe.name %>
-</p>
-<p>
-  <strong>Tags</strong><br>
+	</div>
+</div>
+
+<div class="recipe-image">
+	<% if @recipe.image != nil %>
+		<%= image_tag @recipe.image.url, id: 'recipe-image'%>
+
+		<%unless current_user == @og_user%>
+		  <form class='form-style' action="/favorite" method="post">
+		  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
+		  <input name="recipe_id" value="<%=@recipe.id%>" type="hidden">
+		  <%if current_user.favorites.include? @recipe%>
+		    <input type="hidden" name="state" value="unfavorite">
+		    <button id="heart">
+						<%= image_tag 'dark-heart.png', id: 'favorite' %>
+				</button>
+		  <%else%>
+		    <input type="hidden" name="state" value="favorite">
+				<button id="heart">
+						<%= image_tag 'heart.png', id: 'favorite' %>
+				</button>
+		  <%end%>
+		<%else%>
+		  <%= link_to 'Edit', edit_recipe_path(@recipe) %>
+		<%end%>
+		</form>
+
+	<% end %>
+</div>
+
+<br>
+<div class="recipe-servings">
+<strong>Serves:  </strong> <%=@recipe.serves%><br>
+	<strong>Tags:  </strong>
   <% @recipe.tags .each do |tag|%>
-    <%=tcount%>.<%=tag.name%>
+    #<%=tag.name.capitalize%>
     <%tcount+=1%>
   <%end%>
-</p>
+</div>
 
-<p>
-  <strong>Serves</strong><br>
-  <%=@recipe.serves%>
-</p>
-<p>
-  <strong>Rating</strong><br>
-  <%=@recipe.rating.round(1)%>
-  <%if current_user%>
-  <%@user_rating = 0%>
-  <%@user = current_user%>
-   <%@user.ratings.each do |rating|%>
-    <%if rating.recipe_id == @recipe.id%>
-      <%@user_rating = rating.value%>
-      <%@found = true%>
-    <%end%>
-  <%end%> 
-  <%if @found == false and @first_time_set != nil%>
-    <%@user_rating = @first_time_set.to_f%>
-  <%end%>
- <%unless current_user == @og_user%>
-  <form id="rating_form" action="/update_rating" method="post" onchange="if(this.value != '0') submit()" >
-  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-  <input name="recipe_id" value="<%=@recipe.id%>" type="hidden">
-  <select name="rating">
-    <option id="0" value=0 selected="selected">Rating</option>
-    <option id="1.0" value=1>1</option>
-    <option id="2.0" value=2>2</option>
-    <option id="3.0" value=3>3</option>
-    <option id="4.0" value=4>4</option>
-    <option id="5.0" value=5>5</option>
-  </select>
-  </form>
-  <%end%>
-  <%end%>
-</p>
 
-<p>
-  <strong>Ingredients</strong><br>
-  <% @recipe.ingredients.each do |ingredient| %><br>
-    <%=count%>. <%=ingredient.name%>
+  <div class="recipe-servings"><strong>Ingredients</strong></div>
+
+	<div class='recipe-ingredient-container'>
+  <% @recipe.ingredients.each do |ingredient| %>
+	<div class='recipe-ingredient'>
+    <strong><%=count%>.</strong> <%=ingredient.name%>
     <%count+= 1%>
     <%@recipe.recipeingredients.each do |recipeingredient|%>
       <%if recipeingredient.ingredient_id == ingredient.id%>
         <%=recipeingredient.amount%>
       <%end%>
     <%end%>
+</div>
   <%end%>
-</p>
-<p>
-  <strong>Directions:</strong><br>
-  <% @recipe.directions.split("\n").each do |direction| %>
-  	<%=dcount%>. <%=direction%><br>
-    <%dcount += 1%>
-  <%end%>
-</p>
-<%unless current_user == @og_user%>
-  Favorite
-  <form action="/favorite" method="post">
-  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
-  <input name="recipe_id" value="<%=@recipe.id%>" type="hidden">
-  <%if current_user.favorites.include? @recipe%>
-    <input type="hidden" name="state" value="unfavorite">
-    <button>&#9733 </button>
-  <%else%>
-    <input type="hidden" name="state" value="favorite">
-    <button>&#9734 </button>
-  <%end%>
-<%else%>
-  <%= link_to 'Edit', edit_recipe_path(@recipe) %> 
-<%end%>
+</div>
+<br>
+
+<%if @recipe.directions%>
+	<div class="recipe-servings"><strong>Directions:</strong></div>
+
+		<div class='recipe-direction-container'>
+  		<% @recipe.directions.split("\n").each do |direction| %>
+				<div class='recipe-direction'>
+  				<strong><%=dcount%>.</strong> <%=direction%>
+    			<%dcount += 1%>
+				</div>
+  		<%end%>
+			</div>
+<% end %>
+
+
+	<!--  if there are no directions-->
+	<form class ="form-style" action= '/directions/<%=@recipe.id%>' method='post' enctype="multipart/form-data">
+		<div id= "directions">
+			<strong>Directions</strong><br>
+			1.<br><textarea rows="4" cols="50" name="directions[]" required></textarea><br>
+		</div>
+		<button type="button" onclick="addStep()">Add Step</button>
+		<button type="button" onclick="removeStep()">Remove Step</button>
+		<button type="submit">Submit</button>
+	</form>
+
+
+</div>
+</div>
 </body>
 
 
@@ -102,11 +152,54 @@
 <script>
 var rating_form = document.getElementById("rating_form")
 var default_select = document.getElementById("0")
-var value_to_select =document.getElementById("<%=@user_rating%>")
+var value_to_select = document.getElementById("<%=@user_rating%>")
 function set_dropdown(){
  default_select.removeAttribute("selected")
- value_to_select.setAttribute("selected","selected") 
+ value_to_select.setAttribute("selected","selected")
 }
 
+var direction_count = 1;
+function addDCount() {
+  return direction_count+=1;
+}
+
+var div2 = document.getElementById("directions")
+
+function createBr() {
+  var field = document.createElement("br");
+    return field;
+}
+
+function createTA() {
+  var ta = document.createElement("textarea")
+  ta.setAttribute('rows', '4')
+  ta.setAttribute('cols', '50')
+  ta.setAttribute('name', 'directions[]')
+  ta.required = true;
+  return ta
+}
+
+function addStep() {
+div2.appendChild(document.createTextNode(addDCount() + "."))
+div2.appendChild(createBr());
+div2.appendChild(createTA());
+div2.appendChild(createBr());
+}
+
+var firstS = 1
+
+function removeStep() {
+  if (direction_count > 1){
+  if (firstS == 1){
+    div2.removeChild(div2.lastChild)
+    firstS = 0
+  }
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  div2.removeChild(div2.lastChild)
+  direction_count --
+}
+}
 
 </script>
