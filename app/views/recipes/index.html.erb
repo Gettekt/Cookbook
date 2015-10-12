@@ -1,8 +1,9 @@
-<h1>Listing Recipes</h1>
+<div class='my-recipes'>
+<h1>Your Recipes</h1>
 <%if @form%>
 <strong>Contributions</strong>
 <%unless @contributions == []%>
-<table>
+<table class='recipe-contributions'>
   <thead>
    <tr>
       <th>Name</th>
@@ -29,11 +30,10 @@
 Nothing to see here
 <br>
 <%end%>
-<%= link_to 'New Recipe', new_recipe_path %>
 <br>
 <strong>Favorites</strong>
 <%unless @favorites == []%>
-<table>
+<table class='recipe-favorites'>
   <thead>
     <tr>
       <th>Name</th>
@@ -60,7 +60,6 @@ Nothing to see here
 Nothing to see here
 <br>
 <%end%>
-<%= link_to 'Search for recipes', localsearch_path %>
 
 
 <%else%>
@@ -86,8 +85,10 @@ Nothing to see here
     <% end %>
   </tbody>
 </table>
-
-<br>
-<%= link_to 'Search for recipes', localsearch_path %> |
-<%= link_to 'New Recipe', new_recipe_path %>
 <%end%>
+<div>
+  <br><br>
+<%= link_to 'Search for recipes', root_url %>
+<%= link_to 'New Recipe', new_recipe_path %>
+</div>
+</div>

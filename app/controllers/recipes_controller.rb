@@ -1,5 +1,6 @@
 class RecipesController < ApplicationController
   before_action :set_recipe, only: [:show, :edit, :update, :destroy]
+  skip_before_filter :verify_authenticity_token, :only => [:directions]
 
   # GET /recipes
   # GET /recipes.json
@@ -10,6 +11,17 @@ class RecipesController < ApplicationController
   # GET /recipes/1
   # GET /recipes/1.json
   def show
+
+  end
+
+  def directions
+    @recipe = Recipe.find(params[:id])
+    complete_directions = ""
+    params["directions"].each do |direction|
+      complete_directions += direction + "\n"
+    end
+    @recipe.update_attribute(:directions, complete_directions)
+    render :show
   end
 
   # GET /recipes/new
@@ -27,13 +39,13 @@ class RecipesController < ApplicationController
     @recipe = Recipe.new(recipe_params)
 
     respond_to do |format|
-      if @recipe.save 
+      if @recipe.save
         count = 1
         complete_directions = ""
         params["directions"].each do |direction|
           complete_directions += direction + "\n"
           count += 1
-        end 
+        end
         @recipe.directions = complete_directions
         params["ingredients"].each_with_index do |ingredient, index|
           found = false
@@ -54,8 +66,8 @@ class RecipesController < ApplicationController
           params["tags"].each do |tag|
             @tag = Tag.find_by_name(tag)
             Recipetag.create({:recipe_id => @recipe.id,:tag_id => @tag.id})
-          end 
-        end  
+          end
+        end
         @recipe.serves = params["serves"]
         @recipe.save
         format.html { redirect_to @recipe, notice: 'Recipe was successfully created.' }
@@ -80,7 +92,7 @@ class RecipesController < ApplicationController
         end
         @ingredientnames = []
         @recipe.ingredients.each do |ingredient|
-            @ingredientnames << ingredient.name 
+            @ingredientnames << ingredient.name
         end
         params["ingredients"].each_with_index do |ingredient, index|
           if !@ingredientnames.include? ingredient and ingredient != ""
@@ -96,7 +108,7 @@ class RecipesController < ApplicationController
               @ingredient = Ingredient.create({:name => ingredient})
               Recipeingredient.create({:ingredient_id => @ingredient.id, :recipe_id => @recipe.id, :amount => params["amounts"][index]})
             end
-          else 
+          else
             if ingredient != ""
               @ingredient = Ingredient.find_by_name(ingredient)
               @recipe.recipeingredients.each do |recipeingredient|
@@ -106,13 +118,13 @@ class RecipesController < ApplicationController
                 end
               end
             end
-          end 
+          end
         end
         @ingredientnames.each do |ingredient|
           if !params["ingredients"].include?(ingredient)
             @ingredient = Ingredient.find_by_name(ingredient)
             @recipe.recipeingredients.each do |recipeingredient|
-              if recipeingredient.ingredient_id == @ingredient.id 
+              if recipeingredient.ingredient_id == @ingredient.id
                 recipeingredient.destroy
                 if @ingredient.recipeingredients == nil
                   @ingredient.destroy
@@ -134,7 +146,7 @@ class RecipesController < ApplicationController
         @recipe.tags.each do |tag|
           if !tags.include? tag
             @recipe.recipetags.each do |recipetag|
-              if recipetag.tag_id == tag.id 
+              if recipetag.tag_id == tag.id
                 recipetag.destroy
               end
             end
@@ -162,13 +174,13 @@ class RecipesController < ApplicationController
     @total =0
     @recipe.ratings.each do |rating|
       @total += rating.value
-    end 
+    end
     @user.ratings.each do |rating|
       if rating.recipe_id.to_i == params["recipe_id"].to_i
         @rating = rating
-        found = true 
-      end 
-    end 
+        found = true
+      end
+    end
     if found == false
       @rating = Rating.create({:recipe_id => params["recipe_id"], :user_id => @user.id, :value => params["rating"].to_i})
       @recipe.rating = ((@total + params["rating"].to_i)/(@recipe.ratings.count.to_f))
@@ -176,11 +188,11 @@ class RecipesController < ApplicationController
       @total -= @rating.value
       @rating.update({:value => params["rating"].to_i})
       @total += @rating.value
-      @recipe.rating= ((@total.to_f)/@recipe.ratings.count) 
+      @recipe.rating= ((@total.to_f)/@recipe.ratings.count)
     end
-    @recipe.save 
+    @recipe.save
     @first_time_set = params['rating']
-    render :show 
+    render :show
   end
   def favorite
     require_user
@@ -190,9 +202,9 @@ class RecipesController < ApplicationController
       @user.userrecipes.each do |userrecipe|
         if userrecipe.favorite_id == @recipe.id
           userrecipe.delete
-        end 
+        end
       end
-    else 
+    else
       Userrecipe.create({:user_id => @user.id, :favorite_id => @recipe.id})
     end
     render :show
@@ -224,6 +236,6 @@ class RecipesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def recipe_params
-      params.permit(:name, :rating)
+      params.permit(:name, :rating, :image)
     end
 end

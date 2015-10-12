@@ -1,33 +1,172 @@
-<div class="flexsearch">
-		<div class="flexsearch--wrapper">
-			<form class="flexsearch--form" action="/search" method="get">
-				<div class="flexsearch--input-wrapper">
-				 <input class='flexsearch--input' type="text" name="query">
-				</div>
-			   <input class='flexsearch--submit' type="submit" value="&#10140;">
-			</form>
-		</div>
-</div>
+<form class="form-style--search" action="/search" method="get" >
+	<input type="text" name="query" placeholder="Search Recipes :)"><br><br>
+	<input type="button" onclick="dropDown()" value="Tags">
+	<div id="tags" style="display: none;">
+	<%Tag.all.each do |tag|%>
+		<input type="checkbox" name="tags[]" value="<%=tag.name%>"> <%=tag.name.capitalize%>
+	<%end%>
+</div><br><br>
 
+	<input type="button" onclick="dropDownRating()" value="Ratings">
+	<div id="ratings-drop" style="display: none;">
+		<button type="button" id= "button1" onclick="changeRating1()">&#9734</button>
+		<button type="button" id= "button2" onclick="changeRating2()">&#9734</button>
+		<button type="button" id= "button3" onclick="changeRating3()">&#9734</button>
+		<button type="button" id= "button4" onclick="changeRating4()">&#9734</button>
+		<button type="button" id= "button5" onclick="changeRating5()">&#9734</button>
+	</div><br><br>
+
+	<input id="ratings" type="hidden"name="rating" value="1">
+	<button type="submit">Search</button>
+</form>
+
+<!-- <div class="rating">
+	<h2>Min Rating</h2>
+<div> -->
+
+
+
+<script type="text/javascript">
+
+var rating = document.getElementById("ratings")
+var button1 = document.getElementById("button1")
+var button2 = document.getElementById("button2")
+var button3 = document.getElementById("button3")
+var button4 = document.getElementById("button4")
+var button5 = document.getElementById("button5")
+var div3 = document.getElementById("tags")
+var div4 = document.getElementById("ratings-drop")
+
+function changeRating1() {
+	rating.setAttribute("value","1")
+	if (escape(button1.innerHTML) == "%u2606"){
+		button1.innerHTML = "&#9733"
+	}
+	else { if(escape(button2.innerHTML)=="%u2606"){
+		button1.innerHTML = "&#9734"
+		}
+		else {
+			button2.innerHTML = "&#9734"
+			button3.innerHTML = "&#9734"
+			button4.innerHTML = "&#9734"
+			button5.innerHTML = "&#9734" }
+	}
+
+
+}
+
+function changeRating2() {
+	rating.setAttribute("value","2")
+		if (escape(button2.innerHTML) == "%u2606"){
+		button1.innerHTML = "&#9733"
+		button2.innerHTML = "&#9733"
+	}
+	else { if(escape(button3.innerHTML)=="%u2606"){
+		button1.innerHTML = "&#9734"
+		button2.innerHTML = "&#9734"
+		}
+		else {
+			button3.innerHTML = "&#9734"
+			button4.innerHTML = "&#9734"
+			button5.innerHTML = "&#9734" }
+	}
+
+}
+function changeRating3() {
+	rating.setAttribute("value","3")
+			if (escape(button3.innerHTML) == "%u2606"){
+		button1.innerHTML = "&#9733"
+		button2.innerHTML = "&#9733"
+		button3.innerHTML = "&#9733"
+	}
+	else { if(escape(button3.innerHTML)=="%u2606"){
+		button1.innerHTML = "&#9734"
+		button2.innerHTML = "&#9734"
+		button3.innerHTML = "&#9734"
+		}
+		else {
+			button4.innerHTML = "&#9734"
+			button5.innerHTML = "&#9734" }
+	}
+}
+function changeRating4() {
+	rating.setAttribute("value","4")
+		if (escape(button4.innerHTML) == "%u2606"){
+		button1.innerHTML = "&#9733"
+		button2.innerHTML = "&#9733"
+		button3.innerHTML = "&#9733"
+		button4.innerHTML = "&#9733"
+	}
+	else { if(escape(button3.innerHTML)=="%u2606"){
+		button1.innerHTML = "&#9734"
+		button2.innerHTML = "&#9734"
+		button3.innerHTML = "&#9734"
+		button4.innerHTML = "&#9734"
+		}
+		else {
+			button5.innerHTML = "&#9734" }
+	}
+}
+function changeRating5() {
+	rating.setAttribute("value","5")
+			if (escape(button5.innerHTML) == "%u2606"){
+		button1.innerHTML = "&#9733"
+		button2.innerHTML = "&#9733"
+		button3.innerHTML = "&#9733"
+		button4.innerHTML = "&#9733"
+		button5.innerHTML = "&#9733"
+	}
+	else {
+		button1.innerHTML = "&#9734"
+		button2.innerHTML = "&#9734"
+		button3.innerHTML = "&#9734"
+		button4.innerHTML = "&#9734"
+		button5.innerHTML = "&#9734"
+	}
+}
+function dropDown()
+{
+ if  (div3.getAttribute('style') != "")
+ {
+    div3.setAttribute('style',"")
+ }
+  else
+ {
+		div3.setAttribute('style',"display: none;")
+ }
+}
+
+function dropDownRating()
+{
+ if  (div4.getAttribute('style') != "")
+ {
+    div4.setAttribute('style',"")
+ }
+  else
+ {
+		div4.setAttribute('style',"display: none;")
+ }
+}
+
+</script>
 
 <% if @recipes != nil %>
-	<div class='receipe-container'>
 
-		<div class='main-recipe'>
-			<div>
-			  <%= image_tag @recipes[0]["recipe"]["image"] %>
-		  </div>
+<div class="recipe-search-container">
+	<% @recipes.each do |recipe| %>
+		<div onclick="location.href='recipes/<%= recipe.id %>';" style="cursor:pointer;" class="recipe-search">
+			<div><strong><%= recipe.name %></strong></div><br>
+			<div><%= image_tag recipe.image.url %></div><br>
+
+			<div class="search-rating-container">
+				<div class="search-star-ratings-css">
+					  <div class="search-star-ratings-css-top" style="width: <%=recipe.rating.ceil*25%>%"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+					  <div class="search-star-ratings-css-bottom"><span>★</span><span>★</span><span>★</span><span>★</span><span>★</span></div>
+				</div>
+			</div><br>
+
 		</div>
+	<% end %>
+</div>
 
-		<div class='recommended-recipe'>
-	    <% @recipes.each_with_index do |hit, index| %>
-	      <% the = hit["recipe"] %>
-				<% if index > 0 %>
-				  <p>
-			       <%= image_tag the["image"] %>
-				  </p>
-				<% end %>
-			<% end %>
-	  </div>
-  </div>
 <% end %>

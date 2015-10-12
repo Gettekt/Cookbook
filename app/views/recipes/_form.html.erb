@@ -1,7 +1,7 @@
 
 <%icount = 0%>
 <%dcount = 0%>
-<form action= '/recipes/<%=@recipe.id%>' method='post'>
+<form class ="form-style" action= '/recipes/<%=@recipe.id%>' method='post'>
 <input name="_method" type="hidden" value="PUT">
 <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
 Recipe Name<br>
@@ -80,7 +80,7 @@ function createInputA() {
   field.setAttribute('type','text');
   field.setAttribute('name','amounts[]');
   field.setAttribute('placeholder','Amount');
-  field.required = true;  
+  field.required = true;
     return field;
 }
 function createBr() {
@@ -129,7 +129,7 @@ function removeStep() {
   div2.removeChild(div2.lastChild)
   direction_count --
 }
-}  
+}
 
 function removeIngredient() {
   if (ingredient_count > 1){
