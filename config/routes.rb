@@ -19,6 +19,8 @@ Rails.application.routes.draw do
   post '/directions/:id' => 'recipes#directions'
   get '/my_recipes' => 'recipes#user_recipes'
 
+  match "/404" => "errors#error404", via: [ :get, :post, :patch, :delete ]
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
