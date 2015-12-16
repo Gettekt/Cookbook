@@ -2,38 +2,33 @@
 
 ## Description
 
-Add a short description of your app.
-
-## Screenshots
-
-Add some spiffy screenshots of your app here.
-
-## Background
-
-Why did you want to make this app? What was your development process
-like?
+Rails Recipe Application, that allows users to search for and submit their very own cooking recipes.
 
 ## Features
 
-Bullet point some of the key features of your app here.
+Cook-e-book - Rails based recipe crowdsourced application
++ Cached recipes via Edamam Recipe API to database
++ Built search feature to first query DB before making API call
++ Designed many search filters
++ Implemented Paperclip gem to allow users to upload receipt images
++ Responsive front-end design and seamless mobile navigation.
 
 ## Usage
 
-How do users use your app?
+So we use the Edamame API https://developer.edamam.com/
+Get yourself a key and insert it into the homepages controller code and you're good to go!
 
 ## Development/Contribution
 
-Explain how people can contribute to your app. How should they write tests?
-Any things in particular you'd like to see in pull requests?
+Open for pull requests. Code cleanup is appreciated! :)
 
 ## Future
 
-What features are you currently working on? Only mention things that you
-actually are implementing. No pie-in-the-sky-never-gonna-happen stuff.
+Thinking of using Angular to redo the front-end
 
 ## Author
 
-Link to your blog, twitter, etc!
+Find me at http://linkedin.com/in/gilbertovelez
 
 ## License
 
