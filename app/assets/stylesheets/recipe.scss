@@ -65,6 +65,7 @@
 #recipe-image {
   border-style: solid;
   border-width: 5px;
+  max-width: 400px;
   border-color: rgba(171,132,94,0.2);
 }
 
@@ -79,7 +80,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  max-width: 880px;
+  max-width: 860px;
   justify-content: space-around;
 }
 

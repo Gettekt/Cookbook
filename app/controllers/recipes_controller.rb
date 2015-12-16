@@ -36,7 +36,6 @@ class RecipesController < ApplicationController
   # POST /recipes
   # POST /recipes.json
   def create
-    binding.pry
     @recipe = Recipe.new(recipe_params)
 
     respond_to do |format|
