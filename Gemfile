@@ -35,7 +35,7 @@ gem 'levenshtein-ffi', :require => 'levenshtein'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem 'pry'
 end
 
 group :development do
@@ -62,6 +62,7 @@ group :test, :development do
 end
 
 group :production do
+  gem 'pry'
   gem 'pg'
   gem 'google-analytics-rails'
   gem 'rails_12factor'
