@@ -50,22 +50,24 @@
 		<%end%>
 	 </div>
 	</div>
-	<div class="recipe-founder">
-	<% @recipe.userrecipes.each do |userrecipe| %>
-		<%if userrecipe[:contribution_id]%>
-	    <%@og_user =User.find_by_id(userrecipe[:user_id])%>
-			<div>
-				<h5>Recipe by: </h3><%=@og_user.username%>
-			</div>
-		 <%end%>
-		<%end%>
-	</div>
 </div>
 
 <div class="recipe-image">
 	<% if @recipe.image != nil %>
 		<%= image_tag @recipe.image.url, id: 'recipe-image'%>
 
+		<div class="recipe-founder">
+		<% @recipe.userrecipes.each do |userrecipe| %>
+			<%if userrecipe[:contribution_id]%>
+		    <%@og_user =User.find_by_id(userrecipe[:user_id])%>
+				<div>
+					<h5>Recipe by: </h3><%=@og_user.username%>
+				</div>
+			 <%end%>
+			<%end%>
+		</div>
+
+	<% end %>
 		<%unless current_user == @og_user%>
 		  <form class='form-style' action="/favorite" method="post">
 		  <input name="authenticity_token" value="<%= form_authenticity_token %>" type="hidden">
@@ -82,11 +84,13 @@
 				</button>
 		  <%end%>
 		<%else%>
+		<div>
 		  <%= link_to 'Edit', edit_recipe_path(@recipe) %>
+		</div>
 		<%end%>
 		</form>
 
-	<% end %>
+
 </div>
 
 <br>
